@@ -1,0 +1,3 @@
+[submodule "extern/linenoise"]
+	path = extern/linenoise
+	url = git@github.com:glochtefeld/linenoise.git
