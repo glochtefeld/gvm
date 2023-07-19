@@ -25,33 +25,18 @@ char *hints(const char *buf, int *color, int *bold) {
     return NULL;
 }
 
+static uint8_t *parse(const char *input) {
+    struct {
+        int start;
+        int current;
+    } Scanner;
+    uint8_t *p = malloc(4);
+    return p;
+}
+
 void tryparse(const char *input, uint8_t **prog, int *len) {
     //printf("Parsing '%s'\n", input);
-    uint8_t instr[4] = {0};
-
-    int byte = 0;
-    for (;;) {
-        errno = 0;
-        char *end;
-        const long i = strtol(input, &end,16);
-        if (input == end)
-            break;
-        const bool range_err = errno == ERANGE;
-        // printf("Extracted '%.*s', strtol returned %ld.", (int)(end-input), input, i);
-        input = end;
-
-        if (byte < 4) {
-            instr[byte] = (uint8_t)i;
-        }
-        byte++;
-
-        if (range_err)
-            printf("\n --> Range error occurred for '%.*s'\n", (int)(end-input), input);
-    }
-
-    /*for (int i=0;i<4;i++)
-        printf("%d ",instr[i]);
-    putchar('\n');*/
+    uint8_t *parsed = parse(input);
 
     int oldSize = *len;
     //printf("Old: %d\n", oldSize);
@@ -67,20 +52,14 @@ void tryparse(const char *input, uint8_t **prog, int *len) {
         //printf("Now (resized): %d\n", *len);
     }
     for (int to=oldSize; to < oldSize + 4; to++) {
-        (*prog)[to] = instr[to - oldSize];
+        (*prog)[to] = parsed[to - oldSize];
     }
 }
 
-void start_painful_repl(VM *vm) {
+void start_assembly_repl(VM *vm) {
     char *line;
-    uint8_t *prog = NULL;
+    uint8_t *prog = NULL; // Will be free'd with .clear
     int prog_len = 0;
-    /* vm->program = malloc(4*sizeof(uint8_t));
-    vm->prog_len = 4;
-    tryparse("10 20 30 40", vm);
-    for (int i=0; i<vm->prog_len; i++) {
-        printf("%d\n", vm->program[i]);
-    } */
 
     linenoiseSetCompletionCallback(completion);
     linenoiseSetHintsCallback(hints);

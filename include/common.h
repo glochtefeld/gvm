@@ -37,8 +37,12 @@ typedef struct {
 
     uint32_t remainder;
     bool equal_flag;
+    bool running;
 } VM;
 
 void initVM(VM *vm);
 void runVM(VM *vm, uint8_t *prog, uint32_t prog_len);
+void loadVM(VM *vm, uint8_t *prog, uint32_t prog_len);
+void stepVM(VM *vm);
+void clearVM(VM *vm);
 #endif
